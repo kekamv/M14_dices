@@ -1,0 +1,55 @@
+buildscript {
+    ext {
+        springBootPlugin = 'org.springframework.boot:spring-boot-gradle-plugin'
+        springBootVersion = '2.0.3.RELEASE'
+        thinPlugin = 'org.springframework.boot.experimental:spring-boot-thin-gradle-plugin'
+        thinVersion = '1.0.11.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("${springBootPlugin}:${springBootVersion}")
+        classpath("${thinPlugin}:${thinVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.8
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+javadoc.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework:spring-tx')
+    compile('org.springframework:spring-webmvc')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile ('org.mongodb:bson:3.9.1')
+    compile ('org.mongodb:mongodb-driver:3.9.1')
+    compile ('org.mongodb:mongodb-driver-core:3.9.1')
+    compile ('org.mongodb:mongodb-driver-sync:3.9.1')
+    //compile ('org.springframework.data:spring-data-mongodb:3.0.3.RELEASE')
+
+
+}
+
+springBoot {
+    mainClassName = 'dices.App'
+}
