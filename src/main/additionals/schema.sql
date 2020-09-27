@@ -5,8 +5,10 @@ USE dices_game;
 DROP TABLE IF EXISTS players;
 
 CREATE TABLE IF NOT EXISTS players(
-`id` INT AUTO_INCREMENT,
-player_name VARCHAR(90) NULL DEFAULT "Anonymous",
+id INT AUTO_INCREMENT,
+player_name VARCHAR(30) NULL DEFAULT "Anonymous",
+username VARCHAR(30) NOT NULL UNIQUE,
+user_password VARCHAR (150) NOT NULL,
 entry_date DATE DEFAULT (CURRENT_DATE),
 PRIMARY KEY (id))
 ENGINE = InnoDB;
@@ -30,6 +32,3 @@ CONSTRAINT fk_players1
 CONSTRAINT dice1_value
 	CHECK (dice1_value BETWEEN 1 AND 6))
 ENGINE = InnoDB;
-
-
-

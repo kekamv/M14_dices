@@ -1,9 +1,10 @@
 package dices.model;
 
 import org.hibernate.annotations.Formula;
-import org.springframework.data.jpa.repository.Modifying;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,16 @@ public class Player {
 
     @Column(name="player_name")
     private String name;
+
+    @NotNull(message = "`username` field is mandatory")
+    @Size(min = 3, message = "`username` must be at least 3 characters long")
+    @Column(name = "username")
+    private String username;
+
+    @NotNull(message = "`password` field is mandatory")
+    @Size(min = 8, message = "`password` must be at least 8 characters long")
+    @Column(name = "user_password")
+    private String password;
 
     @Column(name="entry_date")
     private LocalDate entryDate= LocalDate.now();
@@ -34,6 +45,12 @@ public class Player {
         this.name = name;
     }
 
+    public Player(String name, String username, String password){
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
+
     public Double getSuccessRate() {
         return successRate;
     }
@@ -48,6 +65,22 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public LocalDate getEntryDate() {

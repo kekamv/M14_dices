@@ -22,12 +22,6 @@ public class PlayerController {
     public ResponseEntity<List<Player>> getAllPlayers(){
         return ResponseEntity.ok().body(playerService.findAllPlayers());
     }
-    //insert a new player in the DB
-    @PostMapping
-    public ResponseEntity<Player> newPlayer (@Valid @RequestBody Player player){
-        return ResponseEntity.ok()
-        .body(playerService.createPlayer(player));
-    }
 
     //update a player's name
     @PutMapping("/{id}")
