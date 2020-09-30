@@ -48,24 +48,36 @@ public class TokenAuthenticationService {
     }
 
     public Authentication getAuthentication(HttpServletRequest req){
+
         String token = req.getHeader(HEADER_STRING);
-        String user;
+
         if(token != null){
-            try{
-                user =Jwts.parser()
-                        .setSigningKey(jwtSecret)
-                        .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                        .getBody()
-                        .getSubject();
-
-                return user != null ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()) : null;
+            String username = getAuthenticationUser(token);
+            return username != null ? new UsernamePasswordAuthenticationToken(
+                    username, null, Collections.emptyList()) : null;
             }
-            catch (Exception e){
-                log.error("Cannot validate token '{}': error thrown - {}", token, e.getMessage());
-            }
+        return null;
+    }
 
+    public String getAuthenticationUser (String token){
+        try {
+            return Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                    .getBody()
+                    .getSubject();
+        }
+        catch (Exception e){
+            log.error("Cannot validate token '{}': error thrown - {}", token, e.getMessage());
         }
         return null;
+    }
+
+
+    public String getUsernameFromRequest(String request){
+
+        String jwt = request.substring(7);
+        return getAuthenticationUser(jwt);
     }
 
 }

@@ -10,7 +10,4 @@ INSERT INTO games (game_number, dice1_value, dice2_value, game_score, player_id)
 (2,6,5,0,1),
 (2,6,6,0,2);
 
-INSERT INTO players VALUES (), ();
 
-INSERT INTO players (player_name, entry_date) VALUES
-("Player1",'2020-09-25');
