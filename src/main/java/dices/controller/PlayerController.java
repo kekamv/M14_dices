@@ -63,14 +63,23 @@ o	POST: /players : crea un jugador
 
     @GetMapping("/ranking/winner")
     public ResponseEntity getBestRanking(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(playerService.findRankingWinner());
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(playerService.findRankingWinner());
+        }catch (NullPointerException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/ranking/loser")
     public ResponseEntity getWorseRanking(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(playerService.findRankingLoser());
+        try{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(playerService.findRankingLoser());
+        }catch (NullPointerException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
 
 }
