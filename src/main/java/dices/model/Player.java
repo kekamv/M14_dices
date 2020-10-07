@@ -1,13 +1,15 @@
 package dices.model;
 
-import org.hibernate.annotations.Formula;
-import org.springframework.data.jpa.repository.Modifying;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
+//@EntityListeners
 @Table(name="players")
 public class Player {
     @Id
@@ -20,25 +22,27 @@ public class Player {
     @Column(name="entry_date")
     private LocalDate entryDate= LocalDate.now();
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name="game_number", nullable =false)
+    @JsonIgnore
+    @OneToMany(mappedBy = "player")
     List<Game> games;
 
 
-    @Formula("(SELECT AVG(g.game_score)*100 FROM games g WHERE g.player_id = id)")
-    private Double successRate;
+    @Transient
+    private double successRate;
 
-    private Player(){};
+
+
+    public Player(){};
 
     public Player(String name) {
         this.name = name;
     }
 
-    public Double getSuccessRate() {
+    public double getSuccessRate() {
         return successRate;
     }
 
-    public void setSuccessRate(Double successRate) {
+    public void setSuccessRate(double successRate) {
         this.successRate = successRate;
     }
 
@@ -65,4 +69,34 @@ public class Player {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public List<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(List<Game> games) {
+        this.games = games;
+    }
+
+
+
+    @PostLoad
+    public void calculateSuccessRate (){
+
+        long listSize = getGames()
+                .stream()
+                .count();
+        if (listSize==0) {
+            successRate= 0.0;
+
+        }else {
+            successRate = getGames().stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.averagingDouble(Game::getGameScore));
+
+        }
+
+        setSuccessRate(successRate);
+    }
+
 }

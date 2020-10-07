@@ -22,7 +22,7 @@ public class Game {
     private int dice2Value;
 
     @Column(name="game_score")
-    private Integer gameScore;
+    private int gameScore;
 
     @ManyToOne
     @JoinColumn(name="player_id")
@@ -34,6 +34,12 @@ public class Game {
     public Game(int dice1Value, int dice2Value) {
         this.dice1Value = dice1Value;
         this.dice2Value = dice2Value;
+    }
+
+    public Game(int dice1Value, int dice2Value, int gameScore) {
+        this.dice1Value = dice1Value;
+        this.dice2Value = dice2Value;
+        this.gameScore = gameScore;
     }
 
     public Long getId() {
@@ -64,8 +70,8 @@ public class Game {
         return gameScore;
     }
 
-    public void setGameScore() {
-        gameScore = (this.dice1Value + this.dice2Value == 7) ? 1 : 0;
+    public void setGameScore(int gameScore) {
+        this.gameScore = gameScore;
     }
 
     public Player getPlayer() {
