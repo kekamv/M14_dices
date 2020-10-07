@@ -66,10 +66,23 @@ public class PlayerController {
 
     }
 
+    //revisar con el controller de M14
     @GetMapping("/ranking")
     public ResponseEntity getAverageRanking(){
        return ResponseEntity.status(HttpStatus.OK)
         .body(playerService.findTotalAverageRanking());
     }
+    //revisar con el controller de M14
+    @GetMapping("/ranking/winner")
+    public ResponseEntity getBestRanking(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(playerService.findRankingWinner());
+    }
 
+    //revisar con el controller de M14
+    @GetMapping("/ranking/loser")
+    public ResponseEntity getWorseRanking(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(playerService.findRankingLoser());
+    }
 }

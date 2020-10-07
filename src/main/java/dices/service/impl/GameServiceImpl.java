@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -49,13 +48,16 @@ public class GameServiceImpl implements IGameService {
 
     //record a new game for a given player
     @Override
-    public Game rollDices(long playerId, Game game) {
+    public Game rollDices(long playerId) {
 
         Game gameDB = new Game(1,1);
+        int dice1 = ThreadLocalRandom.current().nextInt(1, 7);
+        int dice2 = ThreadLocalRandom.current().nextInt(1, 7);
+        int gameScore = (dice1 + dice2 == 7) ? 1 : 0;
 
-        gameDB.setDice1Value(ThreadLocalRandom.current().nextInt(1, 7));
-        gameDB.setDice2Value(ThreadLocalRandom.current().nextInt(1, 7));
-        gameDB.setGameScore();
+        gameDB.setDice1Value(dice1);
+        gameDB.setDice2Value(dice2);
+        gameDB.setGameScore(gameScore);
         playerRepository.findById(playerId)
                 .map(player -> {
                     gameDB.setPlayer(player);

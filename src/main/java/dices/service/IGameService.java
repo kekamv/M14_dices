@@ -13,6 +13,6 @@ public interface IGameService {
     void deleteGamesByPlayer(long playerId);
 
     //create a new game
-    Game rollDices(long playerId, Game game);
+    Game rollDices(long playerId);
 
 }

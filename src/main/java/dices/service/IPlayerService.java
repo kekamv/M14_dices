@@ -4,6 +4,7 @@ import dices.model.Player;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 public interface IPlayerService {
 
@@ -11,10 +12,14 @@ public interface IPlayerService {
 
     List<Player> findAllPlayers();
 
-    Player createPlayer(Player player);
+    Player createPlayer(String name, String username, String password);
 
-    Player updatePlayer(Long playerId, Player player);
+    Player updatePlayer(Long playerId, String name, String username, String password);
 
-    String findTotalAverageRanking();
+    Map<String, String> findTotalAverageRanking();
+
+    List<Player> findRankingWinner ();
+
+    List<Player> findRankingLoser ();
 
 }

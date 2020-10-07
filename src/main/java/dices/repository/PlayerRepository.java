@@ -8,12 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface
-PlayerRepository extends JpaRepository<Player,Long> {
+public interface PlayerRepository extends JpaRepository<Player,Long> {
 
     Optional<Player> findByUsername (String username);
 
-    @Query(value="SELECT AVG(g.game_score)*100 FROM games g", nativeQuery = true)
+    @Query(value="SELECT AVG(g.gameScore)*100 FROM Game g")
     Double findAverageSuccessRate();
 
 }

@@ -1,12 +1,14 @@
 package dices.model;
 
-import org.hibernate.annotations.Formula;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="players")
@@ -31,13 +33,14 @@ public class Player {
     @Column(name="entry_date")
     private LocalDate entryDate= LocalDate.now();
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "player")
+    //(, cascade = CascadeType.ALL, orphanRemoval = true) alternativa @PreRemove como en el ejemplo al final
     @OrderColumn(name="game_number", nullable =false)
     List<Game> games;
 
-
-    @Formula("(SELECT AVG(g.game_score)*100 FROM games g WHERE g.player_id = id)")
-    private Double successRate;
+    @Transient
+    private double successRate;
 
     private Player(){};
 
@@ -51,11 +54,11 @@ public class Player {
         this.password = password;
     }
 
-    public Double getSuccessRate() {
+    public double getSuccessRate() {
         return successRate;
     }
 
-    public void setSuccessRate(Double successRate) {
+    public void setSuccessRate(double successRate) {
         this.successRate = successRate;
     }
 
@@ -98,4 +101,51 @@ public class Player {
     public void setId(Long id) {
         this.id = id;
     }
+
+
+    public List<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(List<Game> games) {
+        this.games = games;
+    }
+
+
+
+    @PostLoad
+    public void calculateSuccessRate (){
+
+        long listSize = getGames()
+                .stream()
+                .count();
+        if (listSize==0) {
+            successRate= 0.0;
+
+        }else {
+            successRate = getGames().stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.averagingDouble(Game::getGameScore));
+
+        }
+
+        setSuccessRate(successRate);
+    }
+
+/*
+    private Set<UserProfile> userProfiles = new HashSet<UserProfile>(0);
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "educations")
+    public Set<UserProfile> getUserProfiles() {
+        return this.userProfiles;
+    }
+
+    @PreRemove
+    private void removeEducationFromUsersProfile() {
+        for (UsersProfile u : usersProfiles) {
+            u.getEducationses().remove(this);
+        }
+    }
+
+ */
 }
