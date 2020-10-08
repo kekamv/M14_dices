@@ -21,7 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean(name = "configAuthorizationFilter")
+    //(name = "configAuthorizationFilter")
+    @Bean
     public AuthorizationFilter authorizationFilter(){return new AuthorizationFilter();};
 
     @Autowired

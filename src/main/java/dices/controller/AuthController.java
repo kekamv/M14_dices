@@ -35,7 +35,8 @@ public class AuthController {
 
         Set<String> mapKeys = Set.of("name", "username", "password");
 
-        if(body.size()!=3 || body.keySet()!=mapKeys){
+        //|| body.keySet()!=mapKeys
+        if(body.size()!=3 && body.keySet()!=mapKeys){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
         }
 
@@ -52,7 +53,7 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(playerService.createPlayer(body.get("name"),
-                        body.get("usename"),
+                        body.get("username"),
                         body.get("password")));
     }
 

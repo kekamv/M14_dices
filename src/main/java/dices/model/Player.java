@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
+@Cacheable(value = false)
 @Table(name="players")
 public class Player {
     @Id
@@ -43,10 +44,6 @@ public class Player {
     private double successRate;
 
     private Player(){};
-
-    public Player(String name) {
-        this.name = name;
-    }
 
     public Player(String name, String username, String password){
         this.name = name;

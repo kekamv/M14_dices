@@ -17,7 +17,6 @@ DROP TABLE IF EXISTS games;
 
 CREATE TABLE IF NOT EXISTS games(
 id INT AUTO_INCREMENT,
-game_number INT,
 dice1_value INT NOT NULL,
 dice2_value INT NOT NULL CHECK (dice2_value BETWEEN 1 AND 6),
 game_score INT NOT NULL,

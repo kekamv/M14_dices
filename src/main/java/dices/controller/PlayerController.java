@@ -46,7 +46,7 @@ public class PlayerController {
                        "Please log in with your own credentials");
             }
 
-            if(body.size()!=3 || body.keySet()!=mapKeys){
+            if(body.size()!=3 && body.keySet()!=mapKeys){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
             }
 

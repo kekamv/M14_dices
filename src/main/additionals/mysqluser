@@ -1,3 +1,0 @@
-create user 'mysqluser'@'%' identified by 'password';
-grant all on dices_game.* to 'mysqluser'@'%';
-flush privileges;
