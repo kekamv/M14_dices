@@ -22,4 +22,12 @@ public interface IPlayerService {
 
     List<Player> findRankingLoser ();
 
+    boolean nameIsDuplicatePost(String name);
+
+    boolean usernameIsDuplicatePost(String username);
+
+    boolean nameIsDuplicatePut(Long playerId, String name);
+
+    boolean usernameIsDuplicatePut(Long playerId, String username);
+
 }

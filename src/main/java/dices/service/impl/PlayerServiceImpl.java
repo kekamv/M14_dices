@@ -28,6 +28,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public Optional<Player> findPlayerById(Long playerId) {
+
         return playerRepository.findById(playerId);
     }
 
@@ -41,16 +42,13 @@ public class PlayerServiceImpl implements IPlayerService {
     public Player createPlayer(String name, String username, String password) {
 
         Player playerDB = new Player("name", "username", "password");
-        if (nameDuplicatePost(name) == false) {
             if (name == "") {
                 playerDB.setName("Anonymous");
             } else {
                 playerDB.setName(name);
             }
-        }
-        if (usernameDuplicatePost(username) == false) {
             playerDB.setUsername(username);
-        }
+
         playerDB.setPassword(passwordEncoder.encode(password));
         playerDB.setEntryDate(LocalDate.now());
         return playerRepository.save(playerDB);
@@ -60,24 +58,16 @@ public class PlayerServiceImpl implements IPlayerService {
     @Override
     public Player updatePlayer(Long playerId, String name, String username, String password) {
 
-        //esta parte del optional player irá en el controller, el método comenzará definiendo
-        //el playerUpdte como nuevo el playerDB
-        Optional<Player> playerDB = playerRepository.findById(playerId);
-        Player playerUpdate=new Player(name, username, password);
+        Player playerUpdate = findPlayerById(playerId).get();
 
-        if (playerDB.isPresent()) {
-            playerUpdate = playerDB.get();
-            if (nameDuplicatePut(playerId, name) == false) {
-                if (name == "") { playerUpdate.setName("Anonymous");
-                } else playerUpdate.setName(name);
+        if (name == "") { playerUpdate.setName("Anonymous");
+        } else playerUpdate.setName(name);
 
-                if(usernameDuplicatePut(playerId, username)){
-                    if (username != "") playerUpdate.setUsername(username);
-                }
-                if (password != null)
-                    playerUpdate.setPassword(passwordEncoder.encode(password));
-            }
-        }
+        if (username != "") playerUpdate.setUsername(username);
+
+        if (password != null)
+            playerUpdate.setPassword(passwordEncoder.encode(password));
+
         return playerRepository.save(playerUpdate);
     }
 
@@ -125,7 +115,8 @@ public class PlayerServiceImpl implements IPlayerService {
                 .getValue();
     }
 
-    public boolean nameDuplicatePost(String name) {
+    @Override
+    public boolean nameIsDuplicatePost(String name) {
         boolean nameDuplicate;
         if (!findAllPlayers().stream()
                 .filter(Objects::nonNull)
@@ -137,7 +128,8 @@ public class PlayerServiceImpl implements IPlayerService {
         return nameDuplicate;
     }
 
-    public boolean usernameDuplicatePost(String username) {
+    @Override
+    public boolean usernameIsDuplicatePost(String username) {
         boolean usernameDuplicate;
         if (!findAllPlayers().stream()
                 .filter(Objects::nonNull)
@@ -149,7 +141,8 @@ public class PlayerServiceImpl implements IPlayerService {
         return usernameDuplicate;
     }
 
-    public boolean nameDuplicatePut(Long playerId, String name) {
+    @Override
+    public boolean nameIsDuplicatePut(Long playerId, String name) {
         boolean nameDuplicate;
         if (!findAllPlayers().stream()
                 .filter(Objects::nonNull)
@@ -163,7 +156,8 @@ public class PlayerServiceImpl implements IPlayerService {
         return nameDuplicate;
     }
 
-    public boolean usernameDuplicatePut(Long playerId, String username) {
+    @Override
+    public boolean usernameIsDuplicatePut(Long playerId, String username) {
         boolean usernameDuplicate;
         if (!findAllPlayers().stream()
                 .filter(Objects::nonNull)

@@ -1,7 +1,6 @@
 package dices.controller;
 
 import dices.model.AuthRequest;
-import dices.model.Player;
 import dices.service.IPlayerService;
 import dices.service.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,24 +31,31 @@ public class AuthController {
 
     //insert a new player in the DB
     @PostMapping("/SignUp")
-    public ResponseEntity newPlayer (@Valid @RequestBody Player player){
+    public ResponseEntity newPlayer (@RequestBody HashMap<String,String> body){
 
-        if (playerService.findAllPlayers().stream().map(Player::getName)
-                .collect(Collectors.toList()).contains(player.getName())) {
+        Set<String> mapKeys = Set.of("name", "username", "password");
+
+        if(body.size()!=3 || body.keySet()!=mapKeys){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
+        }
+
+        if (playerService.nameIsDuplicatePost(body.get("name"))) {
 
             ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("A player already exists with this name");
         }
 
-        if(!playerService.findAllPlayers().stream().map(Player::getUsername)
-                .collect(Collectors.toList()).contains(player.getUsername())) {
+        if(playerService.usernameIsDuplicatePost(body.get("username"))) {
 
             ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("A player already exits with this username");
         }
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(playerService.createPlayer(player));
+                .body(playerService.createPlayer(body.get("name"),
+                        body.get("usename"),
+                        body.get("password")));
     }
+
 
     //login method
     @PostMapping("/LogIn")

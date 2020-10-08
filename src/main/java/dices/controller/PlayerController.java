@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/players")
@@ -28,12 +28,14 @@ public class PlayerController {
         return ResponseEntity.ok().body(playerService.findAllPlayers());
     }
 
-    //update a player's name
+    //update a player
     @PutMapping("/{id}")
     public ResponseEntity updatePlayer (@RequestHeader("Authorization") String authToken,@PathVariable("id") Long id,
-                                                @Valid @RequestBody Player player){
+                                        @RequestBody HashMap<String,String> body){
 
-        if(playerService.findPlayerById(id).isPresent()==true) {
+        Set<String> mapKeys = Set.of("name", "username", "password");
+
+        if(playerService.findPlayerById(id).isPresent()) {
 
             String username = authService.getUsernameFromRequest(authToken);
             String userToModify = playerService.findPlayerById(id).get().getUsername();
@@ -44,42 +46,43 @@ public class PlayerController {
                        "Please log in with your own credentials");
             }
 
-            if (playerService.findAllPlayers().stream().map(Player::getName)
-                    .collect(Collectors.toList()).contains(player.getName())) {
+            if(body.size()!=3 || body.keySet()!=mapKeys){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
+            }
+
+            if (playerService.nameIsDuplicatePut(id, body.get("name"))) {
 
                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("A player already exists with this name");
             }
 
-            if (!playerService.findAllPlayers().stream().map(Player::getUsername)
-                    .collect(Collectors.toList()).contains(player.getUsername())) {
+            if (playerService.usernameIsDuplicatePut(id,body.get("username"))) {
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("A player already exits with this username");
             }
 
             return ResponseEntity.ok()
-                    .body(playerService.updatePlayer(id, player));
+                    .body(playerService.updatePlayer(
+                            id, body.get("name"), body.get("username"), body.get("password")));
         }
-        else  return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Player with id: "+id+" does not exist");
 
     }
 
-    //revisar con el controller de M14
     @GetMapping("/ranking")
     public ResponseEntity getAverageRanking(){
        return ResponseEntity.status(HttpStatus.OK)
         .body(playerService.findTotalAverageRanking());
     }
-    //revisar con el controller de M14
+
     @GetMapping("/ranking/winner")
     public ResponseEntity getBestRanking(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(playerService.findRankingWinner());
     }
 
-    //revisar con el controller de M14
     @GetMapping("/ranking/loser")
     public ResponseEntity getWorseRanking(){
         return ResponseEntity.status(HttpStatus.OK)
