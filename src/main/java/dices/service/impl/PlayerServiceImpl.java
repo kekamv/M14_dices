@@ -1,6 +1,7 @@
 package dices.service.impl;
 
 import dices.model.Player;
+import dices.repository.GameRepository;
 import dices.repository.PlayerRepository;
 import dices.service.IPlayerService;
 import org.bson.Document;
@@ -20,6 +21,9 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Autowired
     PlayerRepository playerRepository;
+
+    @Autowired
+    GameRepository gameRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -47,19 +51,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public Player createPlayer(String name, String username, String password) {
-        /*
-        Player playerDB=new Player("name");
 
-        if(!playerRepository.findAll().stream().map(Player::getName).collect(Collectors.toList()).contains(player.getName())) {
-            if (player.getName() == null) playerDB.setName("Anonymous");
-            else playerDB.setName(player.getName());
-
-            return playerRepository.insert(playerDB);
-        }
-
-        else throw new IllegalArgumentException("A player already exists with this name");
-
-         */
 
         Player playerDB = new Player("name", "username", "password");
             if (name == "") {
@@ -77,21 +69,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public Player updatePlayer(String playerId, String name, String username, String password) {
-/*
-      Optional<Player> playerDB = playerRepository.findById(playerId);
 
-      if(playerDB.isPresent()){
-
-          if(!findAll().stream().map(Player::getName).collect(Collectors.toList()).contains(player.getName())){
-              Player playerUpdate = playerDB.get();
-
-              if(player.getName()==null) playerUpdate.setName("Anonymous");
-              else playerUpdate.setName(player.getName());
-              return playerRepository.save(playerUpdate);
-          } else throw new IllegalArgumentException("A player already exists with this name");
-      } else throw new ResourceNotFoundException("Player with id: "+playerId+" does not exist");
-
- */
 
       Player playerUpdate = playerRepository.findById(playerId).get();
 
@@ -109,6 +87,8 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public Map<String, Document> globalRanking() {
+
+
         return playerRepository.globalRanking();
     }
 

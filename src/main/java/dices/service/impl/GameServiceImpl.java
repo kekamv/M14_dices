@@ -62,17 +62,8 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public void deleteAllGamesByPlayer_id(String id) {
-     /*   Optional<Player> playerDB= playerRepository.findById(id);
 
-        if(playerDB.isPresent()) {
-
-      */
             gameRepository.deleteAllGamesByPlayer_id(id);
-            /*
-        }
-        else throw new ResourceNotFoundException("Player with id: " + id + " does not exist");
-
-             */
 
     }
 }

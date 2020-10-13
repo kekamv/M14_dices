@@ -1,5 +1,6 @@
 package dices.controller;
 
+import dices.service.IGameService;
 import dices.service.IPlayerService;
 import dices.service.TokenAuthenticationService;
 import org.bson.Document;
@@ -20,6 +21,9 @@ public class PlayerController {
     private IPlayerService playerService;
 
     @Autowired
+    private IGameService gameService;
+
+    @Autowired
     private TokenAuthenticationService authService;
 
     //return all players with its average success %
@@ -27,13 +31,7 @@ public class PlayerController {
     public ResponseEntity<List<Document>> getAllPlayers(){
         return ResponseEntity.ok().body(playerService.findAllPlayers());
     }
-   /*
-    @GetMapping("/all")
-    public ResponseEntity<List<Player>> getAllPlayersWitId(){
-        return ResponseEntity.ok().body(playerService.findAll());
-    }
 
-    */
 
     //update a player's name
     @PutMapping("/{id}")
@@ -75,28 +73,37 @@ public class PlayerController {
             } else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Player with id: " + id + " does not exist");
         }else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
-        /*
-        return ResponseEntity.ok()
-                .body(playerService.updatePlayer(id, player));
 
-         */
     }
 
     @GetMapping("/ranking")
     public ResponseEntity getAverageRanking(){
-       return ResponseEntity.status(HttpStatus.OK)
+
+        if(gameService.findAllGames().size()==0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No games available");
+        }
+
+       else return ResponseEntity.status(HttpStatus.OK)
         .body(playerService.globalRanking());
     }
 
     @GetMapping("/ranking/winner")
     public ResponseEntity getBestRanking(){
-        return ResponseEntity.status(HttpStatus.OK)
+
+        if(gameService.findAllGames().size()==0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No games available");
+        }
+        else return ResponseEntity.status(HttpStatus.OK)
                 .body(playerService.winnerRanking());
     }
 
     @GetMapping("/ranking/loser")
     public ResponseEntity getWorseRanking(){
-        return ResponseEntity.status(HttpStatus.OK)
+
+        if(gameService.findAllGames().size()==0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No games available");
+        }
+        else return ResponseEntity.status(HttpStatus.OK)
                 .body(playerService.loserRanking());
     }
 }

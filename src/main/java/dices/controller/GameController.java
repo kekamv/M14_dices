@@ -45,20 +45,8 @@ public class GameController {
         else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player with id: "+playerId+" does not exist");
 
-        /*
-        return ResponseEntity.ok()
-                .body(gameService.findAllGamesByPlayer_id(player_id));
-
-         */
-    }
-/*
-    @GetMapping("/games")
-    public ResponseEntity<List<Game>> getAllGames (){
-        return ResponseEntity.ok()
-                .body(gameService.findAllGames());
     }
 
- */
 
     //records a new game for player with {id}
     @PostMapping("/{id}/games/")
@@ -85,10 +73,7 @@ public class GameController {
 
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player with id: "+playerId+" does not exist");
-    /*    return ResponseEntity.ok()
-                .body(gameService.rollDicesOnce(playerId));
 
-     */
     }
 
     @DeleteMapping("/{id}/games")
@@ -114,8 +99,5 @@ public class GameController {
         }else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player with id: "+playerId+" does not exist");
     }
-     /*   gameService.deleteAllGamesByPlayer_id(playerId);
-        return ResponseEntity.ok().build();
 
-      */
 }

@@ -31,18 +31,12 @@ public class CustomGameRepositoryImpl implements CustomGameRepository {
     public CustomGameRepositoryImpl (MongoClient mongoClient, @Value("${spring.mongodb.database}") String databaseName){
         this.mongoClient=mongoClient;
         DICES_DATABASE=databaseName;
-        /*CodecRegistry pojoCodecRegistry =
-                fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                        fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-         */
         this.db=this.mongoClient.getDatabase(DICES_DATABASE);
-                //.withCodecRegistry(pojoCodecRegistry);
 
         gamesCollection=db.getCollection(GAMES_COLLECTION);
         playersCollection=db.getCollection(PLAYERS_COLLECTION);
     }
-
 
     @Override
     public List<Document> findGamesByPlayer_id (String player_id) {

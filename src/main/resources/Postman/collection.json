@@ -1,18 +1,18 @@
 {
   "info": {
-    "_postman_id": "43454425-696a-47fb-bbf8-2c2299537919",
-    "name": "dices",
+    "_postman_id": "765d5948-fe50-4658-bb55-a655346c12c7",
+    "name": "dicesjwtsql",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Player setup",
+      "name": "login",
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -20,57 +20,28 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/players",
+          "raw": "http://localhost:8080/auth/LogIn",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "players"
-          ]
-        },
-        "description": "Set up a new player"
-      },
-      "response": []
-    },
-    {
-      "name": "Player name update",
-      "request": {
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/players/{id}",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "players",
-            "{id}"
+            "auth",
+            "LogIn"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "new game for a given player",
+      "name": "sign up",
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -78,63 +49,41 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/players/{id}/games/",
+          "raw": "http://localhost:8080/auth/SignUp",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "players",
-            "{id}",
-            "games",
-            ""
+            "auth",
+            "SignUp"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "delete all games for a given player",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/players/{id}/games",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "players",
-            "{id}",
-            "games"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "list all players w/ ranking  w/o id",
+      "name": "all players",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -157,16 +106,23 @@
       "response": []
     },
     {
-      "name": "list all players w/o ranking  w/ id",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
+      "name": "update player",
       "request": {
-        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -174,7 +130,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/players/all",
+          "raw": "http://localhost:8080/players/{id}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -182,14 +138,14 @@
           "port": "8080",
           "path": [
             "players",
-            "all"
+            "{id}"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "list all games for a given player",
+      "name": "global ranking ",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -198,40 +154,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/players/{id}/games",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "players",
-            "{id}",
-            "games"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "global ranking as average all games all players",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -254,7 +177,7 @@
       "response": []
     },
     {
-      "name": "list winner(s)  highest success rate",
+      "name": "ranking winner ",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -263,7 +186,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -287,22 +210,10 @@
       "response": []
     },
     {
-      "name": "list loser(s)  lowest success rate",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
+      "name": "ranking loser",
       "request": {
         "method": "GET",
         "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n\"name\":\"Gooooo\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
         "url": {
           "raw": "http://localhost:8080/players/ranking/loser",
           "protocol": "http",
@@ -314,6 +225,81 @@
             "players",
             "ranking",
             "loser"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "games by player",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/players/{id}/games",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "players",
+            "{id}",
+            "games"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "new game",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/players/{id}/games/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "players",
+            "{id}",
+            "games",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete games by player",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/players/{id}/games/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "players",
+            "{id}",
+            "games",
+            ""
           ]
         }
       },

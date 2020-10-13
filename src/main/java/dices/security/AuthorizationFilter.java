@@ -32,5 +32,4 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // public void setAuthService(TokenAuthenticationService authService){ this.authService=authService; }
 }
