@@ -15,4 +15,6 @@ public interface IGameService {
     //create a new game
     Game rollDices(long playerId);
 
+    List<Game> findAll();
+
 }

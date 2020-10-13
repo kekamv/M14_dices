@@ -7,14 +7,12 @@ import dices.service.IPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class PlayerServiceImpl implements IPlayerService {
 
     @Autowired
@@ -26,10 +24,16 @@ public class PlayerServiceImpl implements IPlayerService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+
     @Override
     public Optional<Player> findPlayerById(Long playerId) {
 
         return playerRepository.findById(playerId);
+    }
+
+    @Override
+    public Optional<Player> findPlayerByUsername(String username) {
+        return playerRepository.findByUsername(username);
     }
 
     @Override
@@ -65,7 +69,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
         if (username != "") playerUpdate.setUsername(username);
 
-        if (password != null)
+        if (password != "")
             playerUpdate.setPassword(passwordEncoder.encode(password));
 
         return playerRepository.save(playerUpdate);
@@ -89,7 +93,8 @@ public class PlayerServiceImpl implements IPlayerService {
     @Override
     public List<Player> findRankingWinner() {
 
-        return playerRepository.findAll()
+
+        return findAllPlayers()
                 .stream().filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
                         Player::getSuccessRate,
@@ -98,14 +103,16 @@ public class PlayerServiceImpl implements IPlayerService {
                 ))
                 .lastEntry()
                 .getValue();
+
+
     }
 
     @Override
     public List<Player> findRankingLoser() {
-        return playerRepository.findAll()
+        return findAllPlayers()
                 .stream()
-                .filter(Objects::nonNull)
                 .filter(player -> player.getGames().size() > 0)
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
                         Player::getSuccessRate,
                         TreeMap::new,

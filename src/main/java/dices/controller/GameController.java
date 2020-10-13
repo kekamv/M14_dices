@@ -36,7 +36,7 @@ public class GameController {
             if(!userToModify.equals(username)){
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        "Please log in with your own credentials");
+                        "Please log in with your credentials");
             }
 
             return ResponseEntity.ok()
@@ -60,16 +60,16 @@ public class GameController {
             if (!userToModify.equals(username)) {
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        "Please log in with your own credentials");
+                        "Please log in with your credentials");
             }
 
-            if (body.size() != 1 || !body.containsKey("new game")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Wrong data entry");
+            if ((body.size() == 1) && (body.containsKey("new game"))) {
+                return ResponseEntity.ok()
+                        .body(gameService.rollDices(playerId));
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Wrong data entry");
 
-            return ResponseEntity.ok()
-                    .body(gameService.rollDices(playerId));
 
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Player with id: "+playerId+" does not exist");
@@ -87,7 +87,7 @@ public class GameController {
             if (!userToModify.equals(username)) {
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        "Please log in with your own credentials");
+                        "Please log in with your credentials");
             }
 
             try {

@@ -1,6 +1,5 @@
 package dices.controller;
 
-import dices.model.AuthRequest;
 import dices.service.IPlayerService;
 import dices.service.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,51 +25,56 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping
-    public String hello(){return "hello";}
-
     //insert a new player in the DB
     @PostMapping("/SignUp")
     public ResponseEntity newPlayer (@RequestBody HashMap<String,String> body){
 
         Set<String> mapKeys = Set.of("name", "username", "password");
 
-        //|| body.keySet()!=mapKeys
-        if(body.size()!=3 && body.keySet()!=mapKeys){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
+        if((body.size()==3) && (body.keySet().equals(mapKeys))) {
+
+
+            if(body.get("username").length()>=3 && body.get("password").length()>=8 ) {
+
+                if (playerService.nameIsDuplicatePost(body.get("name"))) {
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("A player already exists with this name");
+                }
+
+                if (playerService.usernameIsDuplicatePost(body.get("username"))) {
+
+                   return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("A player already exits with this username");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(playerService.createPlayer(body.get("name"),
+                                body.get("username"),
+                                body.get("password")));
+            }
+            else return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("username length must be at least 3 and password at least 8");
         }
-
-        if (playerService.nameIsDuplicatePost(body.get("name"))) {
-
-            ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("A player already exists with this name");
-        }
-
-        if(playerService.usernameIsDuplicatePost(body.get("username"))) {
-
-            ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("A player already exits with this username");
-        }
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(playerService.createPlayer(body.get("name"),
-                        body.get("username"),
-                        body.get("password")));
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
     }
 
 
     //login method
     @PostMapping("/LogIn")
-    public ResponseEntity login(@RequestBody AuthRequest authRequest) throws Exception{
+    public ResponseEntity login(@RequestBody HashMap<String,String> body) throws Exception {
 
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
-                            authRequest.getPassword()));
-        }
-        catch (Exception e){
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-        }
+        Set<String> mapKeys = Set.of("username","password");
 
-        return ResponseEntity.ok().body(authService.generateToken(authRequest.getUsername()));
+        if ((body.size()==2) && (body.keySet().equals(mapKeys))) {
+
+            if (playerService.findPlayerByUsername(body.get("username")).isPresent()) {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(body.get("username"),
+                                body.get("password")));
+                return ResponseEntity.ok().body(authService.generateToken(body.get("username")));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            }
+        } return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong data entry");
     }
 }

@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Cacheable(value = false)
 @Table(name="players")
 public class Player {
     @Id
@@ -36,8 +35,6 @@ public class Player {
 
     @JsonIgnore
     @OneToMany(mappedBy = "player")
-    //(, cascade = CascadeType.ALL, orphanRemoval = true) alternativa @PreRemove como en el ejemplo al final
-    @OrderColumn(name="game_number", nullable =false)
     List<Game> games;
 
     @Transient

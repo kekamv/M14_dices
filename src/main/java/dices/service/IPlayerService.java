@@ -10,6 +10,8 @@ public interface IPlayerService {
 
     Optional<Player> findPlayerById(Long playerId);
 
+    Optional<Player> findPlayerByUsername(String username);
+
     List<Player> findAllPlayers();
 
     Player createPlayer(String name, String username, String password);

@@ -6,13 +6,11 @@ import dices.repository.PlayerRepository;
 import dices.service.IGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-@Transactional
 public class GameServiceImpl implements IGameService {
     @Autowired
     GameRepository gameRepository;
@@ -30,7 +28,9 @@ public class GameServiceImpl implements IGameService {
     @Override
     public void deleteGamesByPlayer(long playerId) {
 
-        for (Game g: findGamesByPlayerId(playerId)) gameRepository.delete(g);
+        for (Game g: findGamesByPlayerId(playerId)) {
+            gameRepository.delete(g);
+        }
     }
 
     //record a new game for a given player
@@ -50,8 +50,12 @@ public class GameServiceImpl implements IGameService {
                     gameDB.setPlayer(player);
                     return gameDB;
                 });
-
         return gameRepository.save(gameDB);
+    }
+
+    @Override
+    public List<Game> findAll() {
+        return gameRepository.findAll();
     }
 
 }
