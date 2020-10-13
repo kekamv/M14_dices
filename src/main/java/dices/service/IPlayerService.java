@@ -5,6 +5,7 @@ import org.bson.Document;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface IPlayerService {
 
@@ -12,13 +13,25 @@ public interface IPlayerService {
 
     List<Player> findAll();
 
-    Player createPlayer(Player player);
+    Optional<Player> findPlayerById (String playerId);
 
-    Player updatePlayer(String id, Player player);
+    Optional<Player> findByUsername (String username);
+
+    Player createPlayer(String name, String username, String password);
+
+    Player updatePlayer(String id, String name, String username, String password);
 
     Map<String,Document> globalRanking();
 
     Map<String,List<Document>> winnerRanking();
 
     Map<String,List<Document>> loserRanking();
+
+    boolean nameIsDuplicatePost(String name);
+
+    boolean usernameIsDuplicatePost(String username);
+
+    boolean nameIsDuplicatePut(String playerId, String name);
+
+    boolean usernameIsDuplicatePut(String playerId, String username);
 }

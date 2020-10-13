@@ -2,7 +2,6 @@ package dices.configuration;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoClientURI;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,8 +22,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableScheduling
 @EnableAsync
-public class
-SpringConfiguration {
+public class SpringConfiguration {
 
 
     @Bean
@@ -49,10 +47,10 @@ SpringConfiguration {
 
 
     public @Bean
-    SimpleMongoDbFactory mongoDbFactory() {
-        return new SimpleMongoDbFactory(new MongoClientURI(connectionString));
+    SimpleMongoClientDatabaseFactory mongoDbFactory() {
+        return new SimpleMongoClientDatabaseFactory(connectionString);
     }
-
+//SimpleMongoClientDbFactory
     /*
     public @Bean
     MongoTemplate mongoTemplate() {

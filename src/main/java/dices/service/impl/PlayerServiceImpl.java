@@ -5,11 +5,13 @@ import dices.repository.PlayerRepository;
 import dices.service.IPlayerService;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,9 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Autowired
     PlayerRepository playerRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<Document> findAllPlayers() {
@@ -30,7 +35,19 @@ public class PlayerServiceImpl implements IPlayerService {
     }
 
     @Override
-    public Player createPlayer(Player player) {
+    public Optional<Player> findPlayerById (String playerId){
+        return playerRepository.findById(playerId);
+    }
+
+    @Override
+    public Optional<Player> findByUsername (String username){
+
+        return playerRepository.findByUsername(username);
+    }
+
+    @Override
+    public Player createPlayer(String name, String username, String password) {
+        /*
         Player playerDB=new Player("name");
 
         if(!playerRepository.findAll().stream().map(Player::getName).collect(Collectors.toList()).contains(player.getName())) {
@@ -41,11 +58,26 @@ public class PlayerServiceImpl implements IPlayerService {
         }
 
         else throw new IllegalArgumentException("A player already exists with this name");
+
+         */
+
+        Player playerDB = new Player("name", "username", "password");
+            if (name == "") {
+                playerDB.setName("Anonymous");
+            } else {
+                playerDB.setName(name);
+            }
+            playerDB.setUsername(username);
+
+        playerDB.setPassword(passwordEncoder.encode(password));
+        playerDB.setEntryDate(LocalDate.now());
+        return playerRepository.insert(playerDB);
+
     }
 
     @Override
-    public Player updatePlayer(String playerId, Player player) {
-
+    public Player updatePlayer(String playerId, String name, String username, String password) {
+/*
       Optional<Player> playerDB = playerRepository.findById(playerId);
 
       if(playerDB.isPresent()){
@@ -58,6 +90,21 @@ public class PlayerServiceImpl implements IPlayerService {
               return playerRepository.save(playerUpdate);
           } else throw new IllegalArgumentException("A player already exists with this name");
       } else throw new ResourceNotFoundException("Player with id: "+playerId+" does not exist");
+
+ */
+
+      Player playerUpdate = playerRepository.findById(playerId).get();
+
+        if (name == "") { playerUpdate.setName("Anonymous");
+        } else playerUpdate.setName(name);
+
+        if (username != "") playerUpdate.setUsername(username);
+
+        if (password != "")
+            playerUpdate.setPassword(passwordEncoder.encode(password));
+
+        return playerRepository.save(playerUpdate);
+
     }
 
     @Override
@@ -73,5 +120,62 @@ public class PlayerServiceImpl implements IPlayerService {
     @Override
     public Map<String, List<Document>> loserRanking() {
         return playerRepository.loserRanking();
+    }
+
+
+    @Override
+    public boolean nameIsDuplicatePost(String name) {
+        boolean nameDuplicate;
+        if (!findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Player::getName).collect(Collectors.toList()).contains(name)) {
+            nameDuplicate = false;
+        } else {
+            nameDuplicate = true;
+        }
+        return nameDuplicate;
+    }
+
+    @Override
+    public boolean usernameIsDuplicatePost(String username) {
+        boolean usernameDuplicate;
+        if (!findAll().stream()
+                .filter(Objects::nonNull)
+                .map(Player::getUsername).collect(Collectors.toList()).contains(username)) {
+            usernameDuplicate = false;
+        } else {
+            usernameDuplicate = true;
+        }
+        return usernameDuplicate;
+    }
+
+    @Override
+    public boolean nameIsDuplicatePut(String playerId, String name) {
+        boolean nameDuplicate;
+        if (!findAll().stream()
+                .filter(Objects::nonNull)
+                .filter(player -> !player.getId().equals(playerId))
+                .map(Player::getName)
+                .collect(Collectors.toList()).contains(name)) {
+            nameDuplicate = false;
+        } else {
+            nameDuplicate = true;
+        }
+        return nameDuplicate;
+    }
+
+    @Override
+    public boolean usernameIsDuplicatePut(String playerId, String username) {
+        boolean usernameDuplicate;
+        if (!findAll().stream()
+                .filter(Objects::nonNull)
+                .filter(player -> !player.getId().equals(playerId))
+                .map(Player::getUsername)
+                .collect(Collectors.toList()).contains(username)) {
+            usernameDuplicate = false;
+        } else {
+            usernameDuplicate = true;
+        }
+        return usernameDuplicate;
     }
 }

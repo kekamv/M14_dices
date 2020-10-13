@@ -1,26 +1,29 @@
 buildscript {
     ext {
         springBootPlugin = 'org.springframework.boot:spring-boot-gradle-plugin'
-        springBootVersion = '2.0.3.RELEASE'
-        thinPlugin = 'org.springframework.boot.experimental:spring-boot-thin-gradle-plugin'
-        thinVersion = '1.0.11.RELEASE'
+        springBootVersion = '2.3.4.RELEASE'
+        //thinPlugin = 'org.springframework.boot.experimental:spring-boot-thin-gradle-plugin'
+        //thinVersion = '1.0.11.RELEASE'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath("${springBootPlugin}:${springBootVersion}")
-        classpath("${thinPlugin}:${thinVersion}")
+        //classpath("${thinPlugin}:${thinVersion}")
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+plugins {
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+}
 
 
 version '1.0-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = '15'
+
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -39,16 +42,29 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile("org.springframework.boot:spring-boot-devtools")
-    compile ('org.mongodb:bson:3.9.1')
-    compile ('org.mongodb:mongodb-driver:3.9.1')
-    compile ('org.mongodb:mongodb-driver-core:3.9.1')
-    compile ('org.mongodb:mongodb-driver-sync:3.9.1')
-    //compile ('org.springframework.data:spring-data-mongodb:3.0.3.RELEASE')
-
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compile ('org.springframework.boot:spring-boot-starter-security')
+    compile ('io.jsonwebtoken:jjwt:0.9.0')
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //compile ('org.mongodb:bson:4.0.5')
+    //compile ('org.mongodb:mongodb-driver:4.0.5')
+    //compile ('org.mongodb:mongodb-driver-core:4.0.5')
+    //compile ('org.mongodb:mongodb-driver-sync:4.0.5')
 
 }
+
+
+test {
+    useJUnitPlatform()
+}
+
 
 springBoot {
     mainClassName = 'dices.App'
